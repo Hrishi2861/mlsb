@@ -11,8 +11,6 @@ class QueueStatus:
         self.__listener = listener
         self.__status = status
         self.message = listener.message
-        self.starttime = self.__listener.starttime
-        self.engine = "Queue v2.2"
 
     def gid(self):
         return self.__gid

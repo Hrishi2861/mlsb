@@ -87,13 +87,13 @@ class SwUploader:
         return description
 
     async def __msg_to_reply(self):
-        if LD := config_dict["LEECH_DUMP_CHAT"]:
+        if LD := (self.__listener.user_dict.get("leech_dest", False) or config_dict["LEECH_DUMP_CHAT"]):
             text = self.__listener.message.message.lstrip("/").lstrip("@")
             if "|" in LD:
                 commmunity_id, group_id = LD.split("|")
                 receiver_id = None
             else:
-                receiver_id = int(LD)
+                receiver_id = LD if isinstance(LD, int) else int(LD)
                 commmunity_id, group_id = None, None
             try:
                 self.__sent_msg = await bot.send_message(
@@ -224,7 +224,8 @@ class SwUploader:
             mime_type=mime_type,
             thumb=thumb,
             progress=self.__upload_progress,
-            part_size=10*10*1024, task_count=10,
+            part_size=100 * 1024 * 1024,
+            task_count=30,
             media_type=7 if self.__as_doc else None,
         )
         buttons = ButtonMaker()

@@ -5,12 +5,11 @@ from os import walk, path as ospath
 from html import escape
 from aioshutil import move
 from asyncio import create_subprocess_exec, sleep, Event
-from time import time
 
 from bot import Interval, aria2, DOWNLOAD_DIR, download_dict, download_dict_lock, LOGGER, DATABASE_URL, \
     MAX_SPLIT_SIZE, config_dict, status_reply_dict_lock, user_data, non_queued_up, non_queued_dl, queued_up, \
     queued_dl, queue_dict_lock, GLOBAL_EXTENSION_FILTER
-from bot.helper.ext_utils.bot_utils import sync_to_async, get_readable_file_size, is_gdrive_id, get_readable_time
+from bot.helper.ext_utils.bot_utils import sync_to_async, get_readable_file_size, is_gdrive_id
 from bot.helper.ext_utils.fs_utils import get_base_name, get_path_size, clean_download, clean_target, \
     is_first_archive_split, is_archive, is_archive_split, join_files
 from bot.helper.ext_utils.leech_utils import split_file
@@ -53,7 +52,6 @@ class MirrorLeechListener:
         self.join = join
         self.user_id = self.message.user_id
         self.user_dict = user_data.get(self.user_id, {})
-        self.starttime = {'startTime': time()}
 
     async def clean(self):
         try:
@@ -306,7 +304,7 @@ class MirrorLeechListener:
                 size = size - s
             LOGGER.info(f"Leech Name: {up_name}")
             sw = SwUploader(up_name, up_dir, self)
-            sw_upload_status = SwitchStatus(sw, size, self.message, gid, 'up', self.starttime)
+            sw_upload_status = SwitchStatus(sw, size, self.message, gid, 'up')
             async with download_dict_lock:
                 download_dict[self.uid] = sw_upload_status
             await update_all_messages()
@@ -315,7 +313,7 @@ class MirrorLeechListener:
             size = await get_path_size(up_path)
             LOGGER.info(f"Upload Name: {up_name}")
             drive = gdUpload(up_name, up_dir, self)
-            upload_status = GdriveStatus(drive, size, self.message, gid, 'up', self.starttime)
+            upload_status = GdriveStatus(drive, size, self.message, gid, 'up')
             async with download_dict_lock:
                 download_dict[self.uid] = upload_status
             await update_all_messages()
@@ -326,7 +324,7 @@ class MirrorLeechListener:
             RCTransfer = RcloneTransferHelper(self, up_name)
             async with download_dict_lock:
                 download_dict[self.uid] = RcloneStatus(
-                    RCTransfer, self.message, gid, 'up', self.starttime)
+                    RCTransfer, self.message, gid, 'up')
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
@@ -337,8 +335,7 @@ class MirrorLeechListener:
             msg += f'\n<b>Total Files:</b> {folders}'
             if mime_type != 0:
                 msg += f'\n<b>Corrupted Files:</b> {files}'
-            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.starttime["startTime"])}'
-            msg += f'\n<b>cc:</b> {self.tag}\n\n'
+            msg += f'\n<b>cc:</b> {self.tag}'
             await sendMessage(self.message, msg)
             if self.seed:
                 if self.newDir:
@@ -383,7 +380,6 @@ class MirrorLeechListener:
             else:
                 msg += f'\n\nPath: <copy>{rclonePath}</copy>'
                 button = None
-            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.starttime["startTime"])}'
             msg += f'\n\n<b>cc:</b> {self.tag}'
             await sendMessage(self.message, msg, button)
             if self.seed:

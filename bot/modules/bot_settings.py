@@ -164,7 +164,6 @@ async def update_buttons(message, key=None, edit_type=None):
 async def edit_variable(ctx, pre_message, key):
     message = ctx.event.message
     chat = message.group_id or message.user_id
-    LOGGER.info(323223323)
     handler_dict[chat] = False
     value = message.message
     if value.lower() == "true":
@@ -227,7 +226,6 @@ async def edit_variable(ctx, pre_message, key):
             INDEX_URLS.insert(0, value)
     elif value.isdigit():
         value = int(value)
-    LOGGER.info(value)
     config_dict[key] = value
     await update_buttons(pre_message, "var")
     await deleteMessage(message)
@@ -684,13 +682,9 @@ async def load_config():
         MEGA_EMAIL = ""
         MEGA_PASSWORD = ""
 
-    FILELION_API = environ.get("FILELION_API", "")
-    if len(FILELION_API) == 0:
-        FILELION_API = ""
-
-    STREAMWISH_API = environ.get("STREAMWISH_API", "")
-    if len(STREAMWISH_API) == 0:
-        STREAMWISH_API = ""
+    UPTOBOX_TOKEN = environ.get("UPTOBOX_TOKEN", "")
+    if len(UPTOBOX_TOKEN) == 0:
+        UPTOBOX_TOKEN = ""
 
     INDEX_URL = environ.get("INDEX_URL", "").rstrip("/")
     if len(INDEX_URL) == 0:
@@ -888,7 +882,6 @@ async def load_config():
             "DOWNLOAD_DIR": DOWNLOAD_DIR,
             "EQUAL_SPLITS": EQUAL_SPLITS,
             "EXTENSION_FILTER": EXTENSION_FILTER,
-            "FILELION_API": FILELION_API,
             "GDRIVE_ID": GDRIVE_ID,
             "INDEX_URL": INDEX_URL,
             "IS_TEAM_DRIVE": IS_TEAM_DRIVE,
@@ -910,7 +903,6 @@ async def load_config():
             "RSS_CHAT": RSS_CHAT,
             "RSS_DELAY": RSS_DELAY,
             "SEARCH_API_LINK": SEARCH_API_LINK,
-            "STREAMWISH_API": STREAMWISH_API,
             "SEARCH_LIMIT": SEARCH_LIMIT,
             "SEARCH_PLUGINS": SEARCH_PLUGINS,
             "STATUS_LIMIT": STATUS_LIMIT,
@@ -920,6 +912,7 @@ async def load_config():
             "TORRENT_TIMEOUT": TORRENT_TIMEOUT,
             "UPSTREAM_REPO": UPSTREAM_REPO,
             "UPSTREAM_BRANCH": UPSTREAM_BRANCH,
+            "UPTOBOX_TOKEN": UPTOBOX_TOKEN,
             "USE_SERVICE_ACCOUNTS": USE_SERVICE_ACCOUNTS,
             "WEB_PINCODE": WEB_PINCODE,
             "YT_DLP_OPTIONS": YT_DLP_OPTIONS,

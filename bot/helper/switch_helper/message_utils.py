@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from asyncio import sleep
 from time import time
-from json import loads, JSONDecodeError
 
 from bot import config_dict, LOGGER, status_reply_dict, status_reply_dict_lock, Interval, bot, download_dict_lock
 from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval, sync_to_async
@@ -50,14 +49,7 @@ async def deleteMessage(message):
     try:
         await message.delete()
     except Exception as e:
-        try:
-            error_data = loads(str(e))
-            error_message = error_data.get("errorMessage", "Unknown error")
-            LOGGER.error(f"Error message: {error_message}")
-        except JSONDecodeError:
-            LOGGER.error("Error decoding JSON:", str(e))
-        except Exception as ex:
-            LOGGER.error("An unexpected error occurred:", str(ex))
+        LOGGER.error(str(e))
 
 
 async def auto_delete_message(cmd_message=None, bot_message=None):

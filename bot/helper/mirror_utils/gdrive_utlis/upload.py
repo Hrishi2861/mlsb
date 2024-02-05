@@ -140,7 +140,7 @@ class gdUpload(GoogleDriveHelper):
         media_body = MediaFileUpload(file_path,
                                      mimetype=mime_type,
                                      resumable=True,
-                                     chunksize=10 * 1024 * 1024)
+                                     chunksize=100 * 1024 * 1024)
 
         # Insert a file
         drive_file = self.service.files().create(
