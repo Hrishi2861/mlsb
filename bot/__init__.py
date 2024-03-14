@@ -13,7 +13,9 @@ from aria2p import API as ariaAPI, Client as ariaClient
 from qbittorrentapi import Client as qbClient
 from faulthandler import enable as faulthandler_enable
 from socket import setdefaulttimeout
-from logging import getLogger, FileHandler, StreamHandler, INFO, basicConfig, error as log_error, info as log_info, warning as log_warning
+from logging import (getLogger, FileHandler, StreamHandler, 
+                     INFO, basicConfig, error as log_error, 
+                     info as log_info, warning as log_warning)
 from uvloop import install
 
 faulthandler_enable()
@@ -164,9 +166,13 @@ if len(MEGA_EMAIL) == 0 or len(MEGA_PASSWORD) == 0:
     MEGA_EMAIL = ''
     MEGA_PASSWORD = ''
 
-UPTOBOX_TOKEN = environ.get('UPTOBOX_TOKEN', '')
-if len(UPTOBOX_TOKEN) == 0:
-    UPTOBOX_TOKEN = ''
+FILELION_API = environ.get('FILELION_API', '')
+if len(FILELION_API) == 0:
+    FILELION_API = ''
+
+STREAMWISH_API = environ.get('STREAMWISH_API', '')
+if len(STREAMWISH_API) == 0:
+    STREAMWISH_API = ''
 
 INDEX_URL = environ.get('INDEX_URL', '').rstrip("/")
 if len(INDEX_URL) == 0:
@@ -197,6 +203,34 @@ if len(STATUS_UPDATE_INTERVAL) == 0:
     STATUS_UPDATE_INTERVAL = 10
 else:
     STATUS_UPDATE_INTERVAL = int(STATUS_UPDATE_INTERVAL)
+
+STORAGE_THRESHOLD = environ.get('STORAGE_THRESHOLD', '')
+STORAGE_THRESHOLD = '' if len(
+    STORAGE_THRESHOLD) == 0 else float(STORAGE_THRESHOLD)
+
+TORRENT_LIMIT = environ.get('TORRENT_LIMIT', '')
+TORRENT_LIMIT = '' if len(TORRENT_LIMIT) == 0 else float(TORRENT_LIMIT)
+
+DIRECT_LIMIT = environ.get('DIRECT_LIMIT', '')
+DIRECT_LIMIT = '' if len(DIRECT_LIMIT) == 0 else float(DIRECT_LIMIT)
+
+YTDLP_LIMIT = environ.get('YTDLP_LIMIT', '')
+YTDLP_LIMIT = '' if len(YTDLP_LIMIT) == 0 else float(YTDLP_LIMIT)
+
+PLAYLIST_LIMIT = environ.get('PLAYLIST_LIMIT', '')
+PLAYLIST_LIMIT = '' if len(PLAYLIST_LIMIT) == 0 else int(PLAYLIST_LIMIT)
+
+GDRIVE_LIMIT = environ.get('GDRIVE_LIMIT', '')
+GDRIVE_LIMIT = '' if len(GDRIVE_LIMIT) == 0 else float(GDRIVE_LIMIT)
+
+CLONE_LIMIT = environ.get('CLONE_LIMIT', '')
+CLONE_LIMIT = '' if len(CLONE_LIMIT) == 0 else float(CLONE_LIMIT)
+
+MEGA_LIMIT = environ.get('MEGA_LIMIT', '')
+MEGA_LIMIT = '' if len(MEGA_LIMIT) == 0 else float(MEGA_LIMIT)
+
+LEECH_LIMIT = environ.get('LEECH_LIMIT', '')
+LEECH_LIMIT = '' if len(LEECH_LIMIT) == 0 else float(LEECH_LIMIT)
 
 AUTO_DELETE_MESSAGE_DURATION = environ.get('AUTO_DELETE_MESSAGE_DURATION', '')
 if len(AUTO_DELETE_MESSAGE_DURATION) == 0:
@@ -296,6 +330,7 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                'DOWNLOAD_DIR': DOWNLOAD_DIR,
                'EQUAL_SPLITS': EQUAL_SPLITS,
                'EXTENSION_FILTER': EXTENSION_FILTER,
+               'FILELION_API': FILELION_API,
                'GDRIVE_ID': GDRIVE_ID,
                'INDEX_URL': INDEX_URL,
                'IS_TEAM_DRIVE': IS_TEAM_DRIVE,
@@ -317,23 +352,32 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                'RSS_CHAT': RSS_CHAT,
                'RSS_DELAY': RSS_DELAY,
                'SEARCH_API_LINK': SEARCH_API_LINK,
+               'STREAMWISH_API': STREAMWISH_API,
                'SEARCH_LIMIT': SEARCH_LIMIT,
                'SEARCH_PLUGINS': SEARCH_PLUGINS,
                'STATUS_LIMIT': STATUS_LIMIT,
                'STATUS_UPDATE_INTERVAL': STATUS_UPDATE_INTERVAL,
+               'STORAGE_THRESHOLD': STORAGE_THRESHOLD,
+               'TORRENT_LIMIT': TORRENT_LIMIT,
+               'DIRECT_LIMIT': DIRECT_LIMIT,
+               'YTDLP_LIMIT': YTDLP_LIMIT,
+               'PLAYLIST_LIMIT': PLAYLIST_LIMIT,
+               'GDRIVE_LIMIT': GDRIVE_LIMIT,
+               'CLONE_LIMIT': CLONE_LIMIT,
+               'MEGA_LIMIT': MEGA_LIMIT,
+               'LEECH_LIMIT': LEECH_LIMIT, 
                'STOP_DUPLICATE': STOP_DUPLICATE,
                'SUDO_USERS': SUDO_USERS,
                'TORRENT_TIMEOUT': TORRENT_TIMEOUT,
                'UPSTREAM_REPO': UPSTREAM_REPO,
                'UPSTREAM_BRANCH': UPSTREAM_BRANCH,
-               'UPTOBOX_TOKEN': UPTOBOX_TOKEN,
                'USE_SERVICE_ACCOUNTS': USE_SERVICE_ACCOUNTS,
                'WEB_PINCODE': WEB_PINCODE,
                'YT_DLP_OPTIONS': YT_DLP_OPTIONS}
 
 
 log_info("Creating client from BOT_TOKEN")
-bot = BotApp(BOT_TOKEN, 'MLSB')
+bot = BotApp(BOT_TOKEN, 'JSB')
 bot_loop = bot._loop
 bot_name = bot.user.user_name
 
@@ -354,8 +398,9 @@ if ospath.exists('list_drives.txt'):
             else:
                 INDEX_URLS.append('')
 
-PORT = environ.get('PORT')
-Popen(f"gunicorn web.wserver:app --bind 0.0.0.0:{PORT} --worker-class gevent", shell=True)
+if BASE_URL:
+    Popen(
+        f"gunicorn web.wserver:app --bind 0.0.0.0:{BASE_URL_PORT} --worker-class gevent", shell=True)
 
 srun(["qbittorrent-nox", "-d", f"--profile={getcwd()}"])
 if not ospath.exists('.netrc'):

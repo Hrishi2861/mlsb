@@ -104,7 +104,7 @@ class gdDownload(GoogleDriveHelper):
             return
         fh = FileIO(f"{path}/{filename}", 'wb')
         downloader = MediaIoBaseDownload(
-            fh, request, chunksize=100 * 1024 * 1024)
+            fh, request, chunksize=10 * 1024 * 1024)
         done = False
         retries = 0
         while not done:

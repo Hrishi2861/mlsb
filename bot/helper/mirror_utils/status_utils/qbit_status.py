@@ -14,6 +14,9 @@ def get_download(client, tag):
         return None
 
 
+engine_ = f"qBit {get_client().app.version}"
+
+
 class QbittorrentStatus:
 
     def __init__(self, listener, seeding=False, queued=False):
@@ -23,6 +26,8 @@ class QbittorrentStatus:
         self.queued = queued
         self.seeding = seeding
         self.message = listener.message
+        self.starttime = self.__listener.starttime
+        self.engine = engine_
 
     def __update(self):
         new_info = get_download(self.__client, f'{self.__listener.uid}')

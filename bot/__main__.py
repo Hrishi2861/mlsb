@@ -44,7 +44,8 @@ async def stats(ctx):
             f'<b>SWAP:</b> {get_readable_file_size(swap.total)} | <b>Used:</b> {swap.percent}%\n'\
             f'<b>Memory Total:</b> {get_readable_file_size(memory.total)}\n'\
             f'<b>Memory Free:</b> {get_readable_file_size(memory.available)}\n'\
-            f'<b>Memory Used:</b> {get_readable_file_size(memory.used)}\n'
+            f'<b>Memory Used:</b> {get_readable_file_size(memory.used)}\n' \
+            f'\n[𝑩𝒐𝒕 𝒃𝒚 🚀 𝑱𝒆𝒕-𝑴𝒊𝒓𝒓𝒐𝒓](https://switch.click/JetMirror)'
     await sendMessage(ctx.event.message, stats)
 
 
@@ -57,7 +58,7 @@ async def start(ctx):
     if await CustomFilters.authorized(ctx):
         start_string = f'''
 This bot can mirror all your links|files|torrents to Google Drive or any rclone cloud or to switch.
-Type /{BotCommands.HelpCommand} to get a list of available commands
+Type /{BotCommands.HelpCommand} to get a list of available commands. This Repo is little modified By [Lord Puneet 👑.](https://telegram.me/hrishikesh2861)
 '''
         await sendMessage(ctx.event.message, start_string, reply_markup)
     else:
@@ -141,9 +142,9 @@ async def restart_notification():
 
 def register_bot_cmds():
     bot.set_bot_commands(
-        [BotCommand(BotCommands.StartCommand, "Start the bot", True),
-         BotCommand(BotCommands.MirrorCommand[0], "Start mirroring to cloud", True),
-         BotCommand(BotCommands.MirrorCommand[1], "Start mirroring to cloud", True),
+        [BotCommand(BotCommands.MirrorCommand[0], "Start mirroring to cloud", True),
+         BotCommand(BotCommands.MirrorCommand[1],
+                    "Start mirroring to cloud", True),
          BotCommand(
              BotCommands.QbMirrorCommand[0], "Start Mirroring to cloud using qBittorrent", True),
          BotCommand(

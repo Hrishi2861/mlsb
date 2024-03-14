@@ -89,10 +89,10 @@ class SwitchDownloadHelper:
 
             if download:
                 if not filename:
-                    name = media.description
+                    name = media.file_name
                 else:
                     name = filename
-                path = path + name
+                    path = path + name
                 size = media.file_size
                 gid = media.source_id
 

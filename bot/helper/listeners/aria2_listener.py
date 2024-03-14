@@ -2,18 +2,19 @@
 from asyncio import sleep
 from time import time
 from aiofiles.os import remove as aioremove, path as aiopath
-
 from bot import aria2, download_dict_lock, download_dict, LOGGER, config_dict
 from bot.helper.mirror_utils.gdrive_utlis.search import gdSearch
 from bot.helper.mirror_utils.status_utils.aria2_status import Aria2Status
 from bot.helper.ext_utils.fs_utils import get_base_name, clean_unwanted
 from bot.helper.ext_utils.bot_utils import getDownloadByGid, new_thread, bt_selection_buttons, sync_to_async, get_telegraph_list, is_gdrive_id
 from bot.helper.switch_helper.message_utils import sendMessage, deleteMessage, update_all_messages
-
+from bot.helper.ext_utils.task_manager import limit_checker, stop_duplicate_check
 
 @new_thread
 async def __onDownloadStarted(api, gid):
     download = await sync_to_async(api.get_download, gid)
+    if download.options.follow_torrent == 'false':
+        return
     if download.is_metadata:
         LOGGER.info(f'onDownloadStarted: {gid} METADATA')
         await sleep(1)
@@ -37,6 +38,16 @@ async def __onDownloadStarted(api, gid):
         if not hasattr(dl, 'listener'):
             LOGGER.warning(
                 f"onDownloadStart: {gid}. STOP_DUPLICATE didn't pass since download completed earlier!")
+            return
+        
+        if any([config_dict['DIRECT_LIMIT'],
+                config_dict['TORRENT_LIMIT'],
+                config_dict['LEECH_LIMIT'],
+                config_dict['STORAGE_THRESHOLD']]):
+            await sleep(3)
+        dl = await getDownloadByGid(gid)
+        if dl and not hasattr(dl, 'listener'):
+            LOGGER.warning(f"onDownloadStart: {gid}. at Download limit didn't pass since download completed earlier!")
             return
         listener = dl.listener()
         if listener.upDest.startswith('mtp:') and listener.user_dict('stop_duplicate', False) or not listener.upDest.startswith('mtp:') and config_dict['STOP_DUPLICATE']:
@@ -70,6 +81,8 @@ async def __onDownloadComplete(api, gid):
         download = await sync_to_async(api.get_download, gid)
     except:
         return
+    if download.options.follow_torrent == 'false':
+        return
     if download.followed_by_ids:
         new_gid = download.followed_by_ids[0]
         LOGGER.info(f'Gid changed from {gid} to {new_gid}')
@@ -102,6 +115,8 @@ async def __onBtDownloadComplete(api, gid):
     seed_start_time = time()
     await sleep(1)
     download = await sync_to_async(api.get_download, gid)
+    if download.options.follow_torrent == 'false':
+        return
     LOGGER.info(f"onBtDownloadComplete: {download.name} - Gid: {gid}")
     if dl := await getDownloadByGid(gid):
         listener = dl.listener()
@@ -162,6 +177,8 @@ async def __onDownloadError(api, gid):
     error = "None"
     try:
         download = await sync_to_async(api.get_download, gid)
+        if download.options.follow_torrent == 'false':
+            return
         error = download.error_message
         LOGGER.info(f"Download Error: {error}")
     except:

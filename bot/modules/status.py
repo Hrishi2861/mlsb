@@ -17,9 +17,11 @@ async def mirror_status(ctx):
     if count == 0:
         currentTime = get_readable_time(time() - botStartTime)
         free = get_readable_file_size(disk_usage(DOWNLOAD_DIR).free)
-        msg = 'No Active Downloads !\n___________________________'
+        msg = '<b>Uninstall Switch and enjoy your life!</b>'
+        msg += '\n\nNo Active Tasks!___________________________\n'
         msg += f"\n<b>CPU:</b> {cpu_percent()}% | <b>FREE:</b> {free}" \
-            f"\n<b>RAM:</b> {virtual_memory().percent}% | <b>UPTIME:</b> {currentTime}"
+            f"\n<b>RAM:</b> {virtual_memory().percent}% | <b>UPTIME:</b> {currentTime}" \
+            f"\n\n[𝑩𝒐𝒕 𝒃𝒚 🚀 𝑱𝒆𝒕-𝑴𝒊𝒓𝒓𝒐𝒓](https://switch.click/JetMirror)"
         reply_message = await sendMessage(message, msg)
         await auto_delete_message(message, reply_message)
     else:

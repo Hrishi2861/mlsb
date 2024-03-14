@@ -7,6 +7,7 @@ from magic import Magic
 from re import split as re_split, I, search as re_search
 from subprocess import run as srun
 from sys import exit as sexit
+from shutil import rmtree, disk_usage
 
 from .exceptions import NotSupportedExtractionArchive
 from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, GLOBAL_EXTENSION_FILTER
@@ -64,7 +65,7 @@ async def start_cleanup():
         await aiormtree(DOWNLOAD_DIR)
     except:
         pass
-    await makedirs(DOWNLOAD_DIR)
+    await makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 
 def clean_all():
@@ -159,3 +160,20 @@ async def join_files(path):
             for file_ in files:
                 if re_search(fr"{res}\.0[0-9]+$", file_):
                     await aioremove(f'{path}/{file_}')
+
+def check_storage_threshold(size, threshold, arch=False, alloc=False):
+    free = disk_usage(DOWNLOAD_DIR).free
+    if not alloc:
+        if (
+            not arch
+            and free - size < threshold
+            or arch
+            and free - (size * 2) < threshold
+        ):
+            return False
+    elif not arch:
+        if free < threshold:
+            return False
+    elif free - size < threshold:
+        return False
+    return True

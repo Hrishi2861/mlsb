@@ -682,9 +682,13 @@ async def load_config():
         MEGA_EMAIL = ""
         MEGA_PASSWORD = ""
 
-    UPTOBOX_TOKEN = environ.get("UPTOBOX_TOKEN", "")
-    if len(UPTOBOX_TOKEN) == 0:
-        UPTOBOX_TOKEN = ""
+    FILELION_API = environ.get("FILELION_API", "")
+    if len(FILELION_API) == 0:
+        FILELION_API = ""
+
+    STREAMWISH_API = environ.get("STREAMWISH_API", "")
+    if len(STREAMWISH_API) == 0:
+        STREAMWISH_API = ""
 
     INDEX_URL = environ.get("INDEX_URL", "").rstrip("/")
     if len(INDEX_URL) == 0:
@@ -723,6 +727,33 @@ async def load_config():
                 Interval.append(
                     setInterval(STATUS_UPDATE_INTERVAL, update_all_messages)
                 )
+    STORAGE_THRESHOLD = environ.get('STORAGE_THRESHOLD', '')
+    STORAGE_THRESHOLD = '' if len(
+        STORAGE_THRESHOLD) == 0 else float(STORAGE_THRESHOLD)
+
+    TORRENT_LIMIT = environ.get('TORRENT_LIMIT', '')
+    TORRENT_LIMIT = '' if len(TORRENT_LIMIT) == 0 else float(TORRENT_LIMIT)
+
+    DIRECT_LIMIT = environ.get('DIRECT_LIMIT', '')
+    DIRECT_LIMIT = '' if len(DIRECT_LIMIT) == 0 else float(DIRECT_LIMIT)
+
+    YTDLP_LIMIT = environ.get('YTDLP_LIMIT', '')
+    YTDLP_LIMIT = '' if len(YTDLP_LIMIT) == 0 else float(YTDLP_LIMIT)
+
+    PLAYLIST_LIMIT = environ.get('PLAYLIST_LIMIT', '')
+    PLAYLIST_LIMIT = '' if len(PLAYLIST_LIMIT) == 0 else int(PLAYLIST_LIMIT)
+
+    GDRIVE_LIMIT = environ.get('GDRIVE_LIMIT', '')
+    GDRIVE_LIMIT = '' if len(GDRIVE_LIMIT) == 0 else float(GDRIVE_LIMIT)
+
+    CLONE_LIMIT = environ.get('CLONE_LIMIT', '')
+    CLONE_LIMIT = '' if len(CLONE_LIMIT) == 0 else float(CLONE_LIMIT)
+
+    MEGA_LIMIT = environ.get('MEGA_LIMIT', '')
+    MEGA_LIMIT = '' if len(MEGA_LIMIT) == 0 else float(MEGA_LIMIT)
+
+    LEECH_LIMIT = environ.get('LEECH_LIMIT', '')
+    LEECH_LIMIT = '' if len(LEECH_LIMIT) == 0 else float(LEECH_LIMIT)
 
     AUTO_DELETE_MESSAGE_DURATION = environ.get("AUTO_DELETE_MESSAGE_DURATION", "")
     if len(AUTO_DELETE_MESSAGE_DURATION) == 0:
@@ -878,17 +909,22 @@ async def load_config():
             "BASE_URL_PORT": BASE_URL_PORT,
             "BOT_TOKEN": BOT_TOKEN,
             "DATABASE_URL": DATABASE_URL,
+            "DIRECT_LIMIT": DIRECT_LIMIT,
             "DEFAULT_UPLOAD": DEFAULT_UPLOAD,
             "DOWNLOAD_DIR": DOWNLOAD_DIR,
             "EQUAL_SPLITS": EQUAL_SPLITS,
             "EXTENSION_FILTER": EXTENSION_FILTER,
+            "FILELION_API": FILELION_API,
             "GDRIVE_ID": GDRIVE_ID,
+            "GDRIVE_LIMIT": GDRIVE_LIMIT,
             "INDEX_URL": INDEX_URL,
             "IS_TEAM_DRIVE": IS_TEAM_DRIVE,
             "LEECH_DUMP_CHAT": LEECH_DUMP_CHAT,
             "LEECH_FILENAME_PREFIX": LEECH_FILENAME_PREFIX,
+            "LEECH_LIMIT": LEECH_LIMIT,
             "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
             "MEGA_EMAIL": MEGA_EMAIL,
+            "MEGA_LIMIT": MEGA_LIMIT,
             "MEGA_PASSWORD": MEGA_PASSWORD,
             "OWNER_ID": OWNER_ID,
             "QUEUE_ALL": QUEUE_ALL,
@@ -903,6 +939,7 @@ async def load_config():
             "RSS_CHAT": RSS_CHAT,
             "RSS_DELAY": RSS_DELAY,
             "SEARCH_API_LINK": SEARCH_API_LINK,
+            "STREAMWISH_API": STREAMWISH_API,
             "SEARCH_LIMIT": SEARCH_LIMIT,
             "SEARCH_PLUGINS": SEARCH_PLUGINS,
             "STATUS_LIMIT": STATUS_LIMIT,
@@ -910,11 +947,12 @@ async def load_config():
             "STOP_DUPLICATE": STOP_DUPLICATE,
             "SUDO_USERS": SUDO_USERS,
             "TORRENT_TIMEOUT": TORRENT_TIMEOUT,
+            "TORRENT_LIMIT": TORRENT_LIMIT,
             "UPSTREAM_REPO": UPSTREAM_REPO,
             "UPSTREAM_BRANCH": UPSTREAM_BRANCH,
-            "UPTOBOX_TOKEN": UPTOBOX_TOKEN,
             "USE_SERVICE_ACCOUNTS": USE_SERVICE_ACCOUNTS,
             "WEB_PINCODE": WEB_PINCODE,
+            "YTDLP_LIMIT": YTDLP_LIMIT,
             "YT_DLP_OPTIONS": YT_DLP_OPTIONS,
         }
     )

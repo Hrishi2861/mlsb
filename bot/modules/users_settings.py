@@ -328,14 +328,14 @@ async def edit_user_settings(ctx):
             split_size = user_dict["split_size"]
         else:
             split_size = config_dict["LEECH_SPLIT_SIZE"]
-        buttons.ibutton("Leech Destination", f"userset {user_id} ldest")
+            buttons.ibutton("Leech Destination", f"userset {user_id} ldest")
         if user_dict.get("leech_dest", False):
             leech_dest = user_dict["leech_dest"]
         elif "leech_dest" not in user_dict and (LD := config_dict["LEECH_DUMP_CHAT"]):
             leech_dest = LD
         else:
             leech_dest = "None"
-
+            
         buttons.ibutton("Leech Prefix", f"userset {user_id} leech_prefix")
         if user_dict.get("lprefix", False):
             lprefix = user_dict["lprefix"]
@@ -631,7 +631,6 @@ bot.add_handler(
 )
 bot.add_handler(
     CommandHandler(
-        BotCommands.UserSetCommand, user_settings, filter=CustomFilters.authorized
-    )
+        BotCommands.UserSetCommand, user_settings)
 )
 bot.add_handler(CallbackQueryHandler(edit_user_settings, filter=regexp("^userset")))

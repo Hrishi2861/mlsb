@@ -45,7 +45,7 @@ async def add_gd_download(link, path, listener, newname):
     drive = gdDownload(name, path, listener)
     async with download_dict_lock:
         download_dict[listener.uid] = GdriveStatus(
-            drive, size, listener.message, gid, 'dl')
+            drive, size, listener.message, gid, 'dl', listener.starttime)
 
     async with queue_dict_lock:
         non_queued_dl.add(listener.uid)

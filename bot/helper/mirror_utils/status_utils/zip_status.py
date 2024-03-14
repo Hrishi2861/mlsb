@@ -4,6 +4,12 @@ from time import time
 from bot import LOGGER
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus, get_readable_time, async_to_sync
 from bot.helper.ext_utils.fs_utils import get_path_size
+from subprocess import run as zrun
+
+
+def _eng_ver():
+    _engine = zrun(['7z', '-version'], capture_output=True, text=True)
+    return _engine.stdout.split('\n')[2].split(' ')[2]
 
 
 class ZipStatus:
@@ -14,6 +20,8 @@ class ZipStatus:
         self.__listener = listener
         self.__start_time = time()
         self.message = listener.message
+        self.starttime = self.__listener.starttime
+        self.engine = f'p7zip v{_eng_ver()}'
 
     def gid(self):
         return self.__gid

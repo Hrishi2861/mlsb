@@ -12,6 +12,7 @@ def get_download(gid):
         LOGGER.error(f'{e}: Aria2c, Error while getting torrent info')
         return None
 
+engine_ = f"Aria2 v{aria2.client.get_version()['version']}"
 
 class Aria2Status:
 
@@ -23,6 +24,9 @@ class Aria2Status:
         self.start_time = 0
         self.seeding = seeding
         self.message = listener.message
+        self.starttime = self.__listener.starttime
+        self.engine = engine_
+
 
     def __update(self):
         if self.__download is None:

@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
+from mega import MegaApi
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus, get_readable_time
+
+engine_ = f"MegaSDK v{MegaApi('test').getVersion()}"
 
 
 class MegaDownloadStatus:
 
-    def __init__(self, name, size, gid, obj, message):
+    def __init__(self, name, size, gid, obj, message, starttime):
         self.__obj = obj
         self.__name = name
         self.__size = size
         self.__gid = gid
         self.message = message
+        self.starttime = starttime
+        self.engine = engine_
 
     def name(self):
         return self.__name

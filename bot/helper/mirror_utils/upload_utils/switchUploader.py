@@ -224,8 +224,7 @@ class SwUploader:
             mime_type=mime_type,
             thumb=thumb,
             progress=self.__upload_progress,
-            part_size=100 * 1024 * 1024,
-            task_count=30,
+            part_size=10*10*1024, task_count=10,
             media_type=7 if self.__as_doc else None,
         )
         buttons = ButtonMaker()
