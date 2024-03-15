@@ -1,5 +1,5 @@
 from secrets import token_urlsafe
-
+from asyncio import sleep
 from bot import (
     LOGGER,
     aria2_options,
@@ -10,13 +10,12 @@ from bot import (
     queue_dict_lock,
 )
 from bot.helper.ext_utils.bot_utils import sync_to_async
-from bot.helper.ext_utils.task_manager import is_queued, stop_duplicate_check
+from bot.helper.ext_utils.task_manager import is_queued, stop_duplicate_check, limit_checker
 from bot.helper.listeners.direct_listener import DirectListener
 from bot.helper.mirror_utils.status_utils.direct_status import DirectStatus
 from bot.helper.mirror_utils.status_utils.queue_status import QueueStatus
-from bot.helper.switch_helper.message_utils import sendMessage, sendStatusMessage
-
-
+from bot.helper.switch_helper.message_utils import sendMessage, sendStatusMessage, auto_delete_message
+from bot import config_dict
 async def add_direct_download(listener, path):
     details = listener.link
     if not (contents := details.get("contents")):
@@ -24,14 +23,24 @@ async def add_direct_download(listener, path):
         return
     size = details["total_size"]
 
-    if not listener.name:
-        listener.name = details["title"]
-    path = f"{path}/{listener.name}"
-
-    msg, button = await stop_duplicate_check(listener)
-    if msg:
-        await sendMessage(listener.message, msg, button)
-        return
+    if not foldername:
+        foldername = details['title']
+    path = f'{path}/{foldername}'
+    if config_dict['STOP_DUPLICATE']:
+        msg, button = await stop_duplicate_check(foldername, listener)
+        if msg:
+            dmsg = await sendMessage(listener.message, msg, button)
+            await auto_delete_message(listener.message, dmsg)
+            return
+    if any([config_dict['DIRECT_LIMIT'],
+            config_dict['LEECH_LIMIT'],
+            config_dict['STORAGE_THRESHOLD']]):
+        await sleep(1)
+        if limit_exceeded := await limit_checker(size, listener):
+            LOGGER.info(f"Limit Exceeded: {foldername} | {size}")
+            amsg = await sendMessage(listener.message, limit_exceeded)
+            await auto_delete_message(listener.message, amsg)
+            return
 
     gid = token_urlsafe(10)
     added_to_queue, event = await is_queued(listener.mid)
