@@ -7,9 +7,9 @@ from bot.helper.mirror_utils.gdrive_utlis.download import gdDownload
 from bot.helper.mirror_utils.gdrive_utlis.count import gdCount
 from bot.helper.mirror_utils.status_utils.gdrive_status import GdriveStatus
 from bot.helper.mirror_utils.status_utils.queue_status import QueueStatus
-from bot.helper.switch_helper.message_utils import sendMessage, sendStatusMessage
+from bot.helper.switch_helper.message_utils import sendMessage, sendStatusMessage, auto_delete_message
 from bot.helper.ext_utils.bot_utils import sync_to_async
-from bot.helper.ext_utils.task_manager import is_queued, stop_duplicate_check
+from bot.helper.ext_utils.task_manager import is_queued, stop_duplicate_check, limit_checker
 
 
 async def add_gd_download(link, path, listener, newname):
@@ -26,7 +26,10 @@ async def add_gd_download(link, path, listener, newname):
     if msg:
         await sendMessage(listener.message, msg, button)
         return
-
+    if limit_exceeded := await limit_checker(size, listener, isDriveLink=True):
+        gmsg = await sendMessage(listener.message, limit_exceeded)
+        await auto_delete_message(listener.message, gmsg)
+        return
     added_to_queue, event = await is_queued(listener.uid)
     if added_to_queue:
         LOGGER.info(f"Added to Queue/Download: {name}")
