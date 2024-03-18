@@ -98,9 +98,7 @@ class SwUploader:
             try:
                 self.__sent_msg = await bot.send_message(
                     text,
-                    community_id=commmunity_id,
-                    group_id=group_id,
-                    user_id=receiver_id,
+                    user_id = None,
                 )
             except Exception as e:
                 await self.__listener.onUploadError(str(e))
