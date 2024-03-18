@@ -91,14 +91,16 @@ class SwUploader:
             text = self.__listener.message.message.lstrip("/").lstrip("@")
             if "|" in LD:
                 commmunity_id, group_id = LD.split("|")
-                user_id = None
+                receiver_id = None
             else:
                 receiver_id = LD if isinstance(LD, int) else int(LD)
-                user_id = None
+                commmunity_id, group_id = None, None
             try:
                 self.__sent_msg = await bot.send_message(
                     text,
-                    user_id = None,
+                    community_id=commmunity_id,
+                    group_id=group_id,
+                    user_id=receiver_id,
                 )
             except Exception as e:
                 await self.__listener.onUploadError(str(e))
