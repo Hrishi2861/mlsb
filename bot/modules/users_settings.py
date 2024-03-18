@@ -331,7 +331,7 @@ async def edit_user_settings(ctx):
             buttons.ibutton("Leech Destination", f"userset {user_id} ldest")
         if user_dict.get("user_id", False):
             leech_dest = user_dict[user_id]
-        elif "leech_dest" not in user_dict and (LD := config_dict["LEECH_DUMP_CHAT"]):
+        elif "leech_dest" not in user_dict and (LD := user_id):
             leech_dest = LD
         else:
             leech_dest = "None"
