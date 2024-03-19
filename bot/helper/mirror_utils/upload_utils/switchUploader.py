@@ -94,7 +94,7 @@ class SwUploader:
                 receiver_id = None
             else:
                 receiver_id = LD if isinstance(LD, int) else int(LD)
-                commmunity_id, group_id = None, None
+                user_id = None
             try:
                 self.__sent_msg = await bot.send_message(
                     text,
