@@ -87,7 +87,7 @@ class SwUploader:
         return description
 
     async def __msg_to_reply(self):
-        if LD := (self.__listener.user_dict.get("leech_dest", False)):
+        if LD := (self.__listener.user_dict.get("leech_dest", True)):
             text = self.__listener.message.message.lstrip("/").lstrip("@")
             if "|" in LD:
                 commmunity_id, group_id = LD.split("|")
